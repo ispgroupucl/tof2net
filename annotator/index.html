@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  .dot {
+    height: 25px;
+    width: 25px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+    border: 2px solid #808080;
+  }
+</style>
+
+<title>GraphCut Image Annotator</title>
+</head>
+<body>
+<h2>Hello OpenCV.js</h2>
+
+<p id="status">OpenCV.js is loading...</p>
+
+<div id="cv_body" hidden=true>
+  <div>
+    <input type="file" id="class_file" name="classFile" onchange="loadAllClasses()"/>
+  </div>  
+
+
+  <div id="all_files" hidden=true>
+    <div>
+      <input type="file" id="file_select" name="fileSelect" multiple/>
+      <br><br>
+      <button type="button" onclick="addImages()"> Add Images</button>
+      <button type="reset" onclick="resetSelection()"> Remove All</button>
+    </div>
+
+    <div>
+      <select name="fileList" id="file_list" size=3 onchange="loadIntoCanvas(this.selectedIndex)"></select>
+    </div>
+    <button type="button" onclick="saveImage()"> Save Image</button>
+    <button type="button" onclick="copyMask()" > Copy Mask</button>
+    <button type="button" onclick="pasteMask()"> Paste Mask</button>
+    
+  </div>
+
+
+  <div id="all_canvasses" hidden=true>
+    <div>
+      <input type="range" id="start" name="zoom" value="1"
+             min="0.5" max="5.0" step="0.25" onchange="updateScale(this)">
+      <label for="zoom">Zoom</label>
+    </div>
+    <div id="class_buttons"></div> <!--Will be filled once a file is loaded-->
+    
+    <img id="invisible_img" hidden=true/><br>
+    <canvas id="invisible_canvas" hidden=true></canvas>
+    <span id="color_dot" class="dot"></span><label id="color_dot_label"></label>
+
+    <div class="inputoutput">
+      <canvas id="canvas_img" 
+            onmouseup="onMouseUp(event)" onmousedown="onMouseDown(event)"
+            onmousemove="onMouseMove(event)"
+            onkeydown="onKeyDown(event)"
+            onwheel="onMouseWheel(event)"
+            tabindex='1'></canvas>
+      <canvas id="canvas_out" ></canvas>
+      <canvas id="canvas_fused" ></canvas>
+
+    </div>
+    <div>
+      <input type="range" id="start" name="thickness" value="3"
+             min="1.0" max="4.0" step="1.0" onchange="updateThickness(this)">
+      <label for="thickness">Thickness</label>
+    </div>
+    <input type="checkbox" name="img_show" value="intensity" onclick="changeImgShow()" checked>Intensity<br>
+    <input type="checkbox" name="img_show" value="depth" onclick="changeImgShow()" checked>Depth<br>
+    <input type="checkbox" name="img_show" value="annot" onclick="changeImgShow()" checked>Annotations<br>
+    <input type="checkbox" name="img_show" value="annotEdges" onclick="changeImgShow()">Edges<br>
+  </div>
+</div>
+<script src="scripts/datastructures.js"></script>
+<script src="scripts/grabcut.js"></script>
+<script async src="scripts/opencv.js" onload="onOpenCvReady();" type="text/javascript"></script>
+
+</body>
+</html>

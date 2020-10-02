@@ -1,2 +1,3 @@
-# tof2net
-Model and code for the Tof^2Net paper
+# tof$^2$-Net
+
+Code for the Tof^2Net paper

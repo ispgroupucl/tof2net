@@ -1,0 +1,101 @@
+version = 1
+augmentation_function = "default"
+type = "v1-floor"
+
+[[strategy]]
+type = "DatasetMaker"
+dtype = "depth"
+style = "xyz"
+format_type = "input"
+
+## - a décommenter si on veut ajouter les normales
+# [[strategy]]
+# type = "DatasetMaker"
+# dtype = "depth"
+# style = "normalsxyz"
+# format_type = "input"
+
+[[strategy]]
+type = "DatasetMaker"
+dtype = "mask"
+style = "normal"
+format_type = "output"
+
+[[strategy]]
+type = "RandomSplit"
+test_portion = 0.05
+
+[[strategy]]
+type = "GridSearch"
+best_select = "max"
+
+[network]
+type = "conf_unet"
+bn = true
+block = "residual"
+conv_transpose = false
+last_act = "linear"
+big_drop = 0.4
+small_drop = 0.2
+se_ratio = 16
+## - a décommenter si on veut ajouter les normales et commenter la ligne en dessous
+# input_format = ["image", "depth", "depth"]
+input_format = ["image", "depth"]
+output_format = ["mask"]
+multi_input = true
+
+[network.architecture]
+first = 32
+enc.width = [64, 72, 96, 128]
+enc.repeat = [2, 2, 3, 4]
+dec.width = [72, 64, 64]
+dec.repeat = [2, 2, 1]
+
+[training]
+batch_size = 8
+accumulation = 4
+loss = ["CrossEntropyLoss"]
+n_epochs = 80
+type = "default"
+optimizer.lr = 1e-3
+optimizer.type = "AdamW"
+optimizer.weight_decay = 1e-5
+
+[training.weight_init]
+sampling = "kaiming"
+distribution = "normal"
+fan_mode = "fan_in"
+
+[training.scheduler]
+type = "MultiStepLR"
+milestones = [23, 40]
+gamma = 0.1
+
+[val_dataset]
+type = "Default"
+
+[test_dataset]
+type="Default"
+resize = "later"
+dimensions = [1, 128, 192]
+
+[dataset]
+type = "Default"
+dtypes = ["image"]
+resize = "crop3"
+name = "kaspard_pcdv4"
+classes = [ "floor", "bed", "", "",]
+channels_first = true
+dimensions = [1, 128, 128]
+mask.weights = [0.5, 1.000, 1.5]
+
+[augmentation]
+horizontal_flip = 0.5
+zoom_range = 0.2
+
+[saves]
+save_best_only = true
+path = "logs/"
+monitor = "val_mask_miou"
+
+
