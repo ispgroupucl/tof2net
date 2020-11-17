@@ -1,0 +1,29 @@
+#!/usr/bin/env python3
+import argparse
+import open3d # BUG : currently have to import open3d before torch, so...
+from tofnet import train, predict
+from tofnet.evaluation import evaluation_utils
+from tofnet.data import datasets
+from tofnet.evaluation import pipeline as pipeline
+
+def create_subparser(parser, name, module):
+    subparser = parser.add_parser(name)
+    module.create_parser(subparser)
+    subparser.set_defaults(func=module.main)
+
+def create_parser(parser=None):
+    if parser is None:
+        parser = argparse.ArgumentParser(description="Contains all Kap utilities")
+    subparsers = parser.add_subparsers(dest="sub")
+    create_subparser(subparsers, 'train', train)
+    create_subparser(subparsers, 'predict', predict)
+    create_subparser(subparsers, 'metrics', evaluation_utils)
+    create_subparser(subparsers, 'pipeline', pipeline)
+    return parser
+
+
+
+if __name__ == "__main__":
+    parser = create_parser()
+    args = parser.parse_args()
+    args.func(args)
