@@ -84,7 +84,7 @@ pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pycparser==2.18
 pycrypto==2.6.1
-Pygments==2.6.1
+Pygments==2.7.4
 PyNaCl==1.2.1
 pyparsing==2.2.0
 -e git+https://github.com/victorjoos/pypcd.git@307cb7f4e6c32e8aaa2fa3f63f38802e58456be8#egg=pypcd
